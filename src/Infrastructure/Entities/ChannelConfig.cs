@@ -13,7 +13,7 @@ public class ChannelConfig
         return new()
         {
             Id = "@iTokenEthereum",
-            ReadMessageId = 499613,
+            ReadMessageId = 1103115,
         };
     }
 }

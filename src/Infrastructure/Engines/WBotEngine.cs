@@ -2,7 +2,6 @@
 using Infrastructure.Persistent;
 using Infrastructure.Settings;
 using Microsoft.Extensions.Options;
-using Npgsql;
 using Telegram.Bot.Types.Enums;
 using WTelegram;
 using WTelegram.Types;
@@ -11,7 +10,7 @@ namespace Infrastructure.Engines;
 
 public interface IWBotEngine
 {
-    Task ReadLastedMessagesAsync(ChannelConfig channel);
+    Task ReadLastedMessagesAsync(ChannelConfig channel, Bot bot);
 }
 
 public class WBotEngine : IWBotEngine
@@ -24,12 +23,10 @@ public class WBotEngine : IWBotEngine
         databaseSettings = databaseOptions.Value;
     }
 
-    private const string ForwardId = "-4531896172";
+    private const string ForwardId = "-1002276561141";
 
-    public async Task ReadLastedMessagesAsync(ChannelConfig channel)
+    public async Task ReadLastedMessagesAsync(ChannelConfig channel, Bot bot)
     {
-        using NpgsqlConnection connection = new(databaseSettings.ConnectionString);
-        using Bot bot = new(telegramSettings.BotToken, telegramSettings.AppId, telegramSettings.AppHash, connection);
         List<Message> messages = await bot.GetMessagesById(channel.Id, Enumerable.Range(channel.ReadMessageId, 10));
         foreach (Message message in messages)
         {
@@ -47,6 +44,12 @@ public class WBotEngine : IWBotEngine
                 continue;
             }
 
+            if (content.Contains("Supply: 10,000,000 (+9 decimals)") || content.Contains("Supply: 100,000,000 (+9 decimals)"))
+            {
+                Message forward = await bot.ForwardMessage(ForwardId, channel.Id, message.MessageId, message.MessageId);
+                await bot.SendTextMessage(ForwardId, "Nghi VIT", replyParameters: forward);
+                continue;
+            }
         }
     }
 }
