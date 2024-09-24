@@ -48,7 +48,6 @@ public class WBotEngine : IWBotEngine
             {
                 Message forward = await bot.ForwardMessage(ForwardId, channel.Id, message.MessageId, message.MessageId);
                 await bot.SendTextMessage(ForwardId, "Nghi VIT", replyParameters: forward);
-                continue;
             }
         }
     }
