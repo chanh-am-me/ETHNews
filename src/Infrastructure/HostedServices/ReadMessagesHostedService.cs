@@ -37,6 +37,7 @@ public class ReadMessagesHostedService : BackgroundService
             try
             {
                 await engine.ReadLastedMessagesAsync(channel, bot);
+                System.Console.WriteLine("------ Add logging -------------");
             }
             catch (Exception ex)
             {
